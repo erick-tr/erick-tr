@@ -1,0 +1,32 @@
+# Cálculo da irradiância (W/m²) e irradiação (kj/hm²) solar no Topo da Atmosfera (TOA)
+
+import math # Importa o pacote de funções matemáticas
+
+# Informações necessárias
+dda = 289 #Dia do ano considerando fevereiro com 28 dias (1 - 365).
+hora = 10 #Hora do registro.
+min = 30 #Minutos do regitro.
+horamin = (min/60) + hora #Transforma minutos em horas.
+lat = math.radians(float(-23.1111)) #Latitude em graus. Converte para radianos.
+
+# Cálculo dos parâmetros necessários
+Es_inst = 1367 # Constante solar em W/m²
+Es_hora = float((1367 * 3.6)) # Constante solar em kj/hm²
+ang_sol = math.radians(float((horamin - 12) * 15)) #Ângulo horário solar em graus. Ele é 0 no meridiano local (12h) e 1h = 15°. Transformar em radianos.
+dec_sol = math.radians(float(-8.67)) # Valor retirado da tabela 1.3.1, Cap 1 - Iqbau. Está em graus e converte pra radianos.
+ang_dia = float((2 * math.pi * (dda - 1)) / 365) # Ângulo do dia em radianos.
+E0 = float(1.000110 + 0.034221 * math.cos(ang_dia) + 0.001280 * math.sin(ang_dia) + 0.000719 * math.cos(2*ang_dia) + 0.000077 * math.sin(2*ang_dia)) # Fator E0
+
+#Cálculo do ângulo zenital       
+ang_zenital = float(math.sin(dec_sol) * math.sin(lat) + math.cos(dec_sol) * math.cos(lat) * math.cos(ang_sol))
+
+# Cálculo da irradiância no Topo da Atmosfera (TOA)
+
+I0 = float((Es_inst * E0) * ang_zenital)
+
+# Cálculo da irradiação no Topo da Atmosfera (TOA)
+
+I1 = float((Es_hora * E0) * ang_zenital)
+
+print('Irradiância', I0, 'W/m²')
+print('Irradiação', I1, 'Kj/hm²')
